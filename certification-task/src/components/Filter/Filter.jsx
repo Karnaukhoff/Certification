@@ -16,6 +16,7 @@ export const Filter = ({ content, visible, setVisible, numberSelectedValues }) =
 
       {visible && (
         <S.FilterCategoryMenu>
+          <S.FilterHeader>По количеству репозиториев пользователя</S.FilterHeader>
           <S.FilterList>{content}</S.FilterList>
         </S.FilterCategoryMenu>
       )}

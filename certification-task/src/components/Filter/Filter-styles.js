@@ -103,6 +103,12 @@ export const FilterCategoryMenu = styled.div`
   top: 49px;
   z-index: 2;
 `;
+export const FilterHeader = styled.p`
+  font-family: 'StratosSkyeng', sans-serif;
+  color: #fff;
+  font-size: 20px;
+  width: 350px;
+`;
 
 export const FilterList = styled.ul`
   width: 180px;
