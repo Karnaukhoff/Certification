@@ -21,6 +21,11 @@ const Pagination = ({ usersPerPage, setUsersPerPage, currentPage, countOfPosts, 
   }
   //настройка per_page
   useEffect(() => {
+    if (buttons) {onAllButtons()}
+    else {
+      offAllButtons()
+      return
+    }
     if (currentPage === 1) {
       setOffFirstPageBtn(true);
       setOffPrevPageBtn(true);
@@ -35,8 +40,6 @@ const Pagination = ({ usersPerPage, setUsersPerPage, currentPage, countOfPosts, 
       setOffNextPageBtn(false);
       setOffLastPageBtn(false);
     }
-    if (buttons) onAllButtons()
-    else offAllButtons()
     // eslint-disable-next-line
   }, [currentPage, buttons]);
 

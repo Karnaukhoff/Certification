@@ -96,3 +96,13 @@ export const HeaderForUsers = styled.div`
 export const User = styled.div``;
 export const CountOfReps = styled.div``;
 export const ListFilter = styled.div``;
+export const ModalHeader = styled.header`
+  display: flex;
+  justify-content: flex-end;
+`;
+export const ModalHeaderTitle = styled.h1``;
+export const ModalHeaderClose = styled.img`
+  width: 30px;
+  height: 30px;
+  margin-top: 30px;
+`;

@@ -1,5 +1,6 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
+import Modal from "react-modal";
 import * as S from "./App-styles";
 import { getUsers, sortUsersAsc, sortUsersDesc } from "./api";
 import User from "./components/User/User";
@@ -7,6 +8,7 @@ import { Filter } from "./components/Filter/Filter";
 import Pagination from "./components/Pagination/Pagination";
 
 function App() {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [searched, setSearched] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [users, setUsers] = useState([]);
@@ -16,9 +18,27 @@ function App() {
   const [usersPerPage, setUsersPerPage] = useState(10);
   const [slideButtons, setSlideButtons] = useState(true);
   const paginate = pageNumber => setCurrentPage(pageNumber);
-  //пагинация
 
-  //модальное окно по каждому пользователю(аватарка, имя, логин, id, подписчики, подписки, email, bio, дата создания, дата обновления)
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const modalContent = (
+    <>
+      <S.ModalHeader>
+        <S.ModalHeaderClose
+          src="/img/close_modal.png"
+          alt="close"
+          onClick={closeModal}
+        />
+      </S.ModalHeader>
+      <p>Ошибка сервера, повторите попытку позже...</p>
+    </>
+  );
   const [search, setSearch] = useState("");
   useEffect(() => {
     if (search !== ""){
@@ -28,21 +48,33 @@ function App() {
           setTotalCount(result?.total_count);
           setUsers(result.items);
           setSearched(true);
-        }).then(() => setSlideButtons(true));
+        }).then(() => setSlideButtons(true))
+        .catch(() => {
+          setSearched(false)
+          openModal()
+        });
       }
       else if (filteredItem === "От наименьшего к наибольшему") {
         sortUsersAsc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
           setTotalCount(result?.total_count);
           setUsers(result?.items);
           setSearched(true);
-        }).then(() => setSlideButtons(true));
+        }).then(() => setSlideButtons(true))
+        .catch(() => {
+          setSearched(false)
+          openModal()
+        });
       }
       else {
         getUsers({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
           setTotalCount(result?.total_count);
           setUsers(result?.items);
           setSearched(true);
-        }).then(() => setSlideButtons(true));
+        }).then(() => setSlideButtons(true))
+        .catch(() => {
+          setSearched(false)
+          openModal()
+        });
       }
     }
     // eslint-disable-next-line
@@ -68,7 +100,11 @@ function App() {
                       setTotalCount(result?.total_count);
                       setUsers(result.items);
                       setSearched(true);
-                    }).then(() => setSlideButtons(true));
+                    }).then(() => setSlideButtons(true))
+                    .catch(() => {
+                      setSearched(false)
+                      openModal()
+                    });
                   } else {
                     setUsers([]);
                     setSearched(false);
@@ -106,7 +142,11 @@ function App() {
                             setTotalCount(result?.total_count);
                             setUsers(result.items);
                             setSearched(true);
-                          }).then(() => setSlideButtons(true));
+                          }).then(() => setSlideButtons(true))
+                          .catch(() => {
+                            setSearched(false)
+                            openModal()
+                          });
                         }
                         if (item === "От наименьшего к наибольшему") {
                           setSlideButtons(false)
@@ -114,7 +154,11 @@ function App() {
                             setTotalCount(result?.total_count);
                             setUsers(result.items);
                             setSearched(true);
-                          }).then(() => setSlideButtons(true));
+                          }).then(() => setSlideButtons(true))
+                          .catch(() => {
+                            setSearched(false)
+                            openModal()
+                          });
                         }
                       }
                     }}
@@ -133,7 +177,11 @@ function App() {
                       setUsers(result.items);
                       setSearched(true);
                       setFilteredItem();
-                    }).then(() => setSlideButtons(true));
+                    }).then(() => setSlideButtons(true))
+                    .catch(() => {
+                      setSearched(false)
+                      openModal()
+                    });
                   }
                 }}
               >
@@ -158,12 +206,12 @@ function App() {
             {
               searched ?
               <Pagination
-              usersPerPage={usersPerPage}
-              setUsersPerPage={setUsersPerPage}
-              currentPage={currentPage}
-              countOfPosts={totalCount > 1000 ? 1000 : totalCount}
-              buttons={slideButtons}
-              paginate={paginate}
+                usersPerPage={usersPerPage}
+                setUsersPerPage={setUsersPerPage}
+                currentPage={currentPage}
+                countOfPosts={totalCount > 1000 ? 1000 : totalCount}
+                buttons={slideButtons}
+                paginate={paginate}
             />
             :
             null
@@ -172,6 +220,25 @@ function App() {
           </S.UseContainer>
         </S.UseContainer>
       </S.Main>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={{
+          content: {
+            width: "340px",
+            height: "160px",
+            inset: "unset",
+          },
+          overlay: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1,
+          },
+        }}
+      >
+        {modalContent}
+      </Modal>
     </>
   );
 }
