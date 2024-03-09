@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Pagination = ({ usersPerPage, currentPage, countOfPosts, buttons, paginate }) => {
+const Pagination = ({ usersPerPage, setUsersPerPage, currentPage, countOfPosts, buttons, paginate }) => {
   const [offFirstPageBtn, setOffFirstPageBtn] = useState(false);
   const [offPrevPageBtn, setOffPrevPageBtn] = useState(false);
   const [offNextPageBtn, setOffNextPageBtn] = useState(false);
@@ -41,7 +41,10 @@ const Pagination = ({ usersPerPage, currentPage, countOfPosts, buttons, paginate
   }, [currentPage, buttons]);
 
   return (
-    <nav>
+    <nav style={{
+        "display": "flex",
+        "justifyContent": "center"
+    }}>
       <ul
         className="pagination"
         style={{
@@ -84,6 +87,19 @@ const Pagination = ({ usersPerPage, currentPage, countOfPosts, buttons, paginate
           {">>"}
         </button>
       </ul>
+      <select defaultValue={usersPerPage} onChange={(e) => {
+        setUsersPerPage(e.target.value)
+        paginate(1)
+    }} id="select" name="per_page" style={{
+            "margin-left": "10px",
+            "margin-top": "16px",
+            "height": "20px"
+      }}>
+        <option value="10">10</option>
+        <option value="30">30</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
     </nav>
   );
 };

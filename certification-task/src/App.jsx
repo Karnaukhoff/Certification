@@ -13,7 +13,7 @@ function App() {
   const [window, setWindow] = useState(false);
   const [filteredItem, setFilteredItem] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage, setUsersPerPage] = useState(100);
+  const [usersPerPage, setUsersPerPage] = useState(30);
   const [slideButtons, setSlideButtons] = useState(true);
   const paginate = pageNumber => setCurrentPage(pageNumber);
   //пагинация
@@ -24,21 +24,21 @@ function App() {
     if (search !== ""){
       setSlideButtons(false)
       if (filteredItem === "От наибольшего к наименьшему") {
-        sortUsersDesc({ search: search, page: currentPage }).then((result) => {
+        sortUsersDesc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
           setTotalCount(result?.total_count);
           setUsers(result.items);
           setSearched(true);
         }).then(() => setSlideButtons(true));
       }
       else if (filteredItem === "От наименьшего к наибольшему") {
-        sortUsersAsc({ search: search, page: currentPage }).then((result) => {
+        sortUsersAsc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
           setTotalCount(result?.total_count);
           setUsers(result?.items);
           setSearched(true);
         }).then(() => setSlideButtons(true));
       }
       else {
-        getUsers({ search: search, page: currentPage }).then((result) => {
+        getUsers({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
           setTotalCount(result?.total_count);
           setUsers(result?.items);
           setSearched(true);
@@ -46,7 +46,7 @@ function App() {
       }
     }
     // eslint-disable-next-line
-  }, [currentPage])
+  }, [currentPage, usersPerPage])
 
   return (
     <>
@@ -64,7 +64,7 @@ function App() {
                 onClick={() => {
                   if (search !== "") {
                     setSlideButtons(false)
-                    getUsers({ search: search, page: currentPage }).then((result) => {
+                    getUsers({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
                       setTotalCount(result?.total_count);
                       setUsers(result.items);
                       setSearched(true);
@@ -102,7 +102,7 @@ function App() {
                         setFilteredItem(item);
                         if (item === "От наибольшего к наименьшему") {
                           setSlideButtons(false)
-                          sortUsersDesc({ search: search, page: currentPage }).then((result) => {
+                          sortUsersDesc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
                             setTotalCount(result?.total_count);
                             setUsers(result.items);
                             setSearched(true);
@@ -110,7 +110,7 @@ function App() {
                         }
                         if (item === "От наименьшего к наибольшему") {
                           setSlideButtons(false)
-                          sortUsersAsc({ search: search, page: currentPage }).then((result) => {
+                          sortUsersAsc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
                             setTotalCount(result?.total_count);
                             setUsers(result.items);
                             setSearched(true);
@@ -128,7 +128,7 @@ function App() {
                 onClick={() => {
                   if (search !== "") {
                     setSlideButtons(false)
-                    getUsers({ search: search, page: currentPage }).then((result) => {
+                    getUsers({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
                       setTotalCount(result?.total_count);
                       setUsers(result.items);
                       setSearched(true);
@@ -158,6 +158,7 @@ function App() {
               searched ?
               <Pagination
               usersPerPage={usersPerPage}
+              setUsersPerPage={setUsersPerPage}
               currentPage={currentPage}
               countOfPosts={totalCount > 1000 ? 1000 : totalCount}
               buttons={slideButtons}
