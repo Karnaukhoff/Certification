@@ -27,3 +27,12 @@ export async function getUsers({search, page, per_page}) {
     const data = await response.json();
     return data;
   }
+  export async function getUserInf({url}) {
+    const response = await fetch(`${url}`);
+    if (!response.ok) {
+        response.json().then((response) => console.log(response.message))
+        return
+    }
+    const data = await response.json();
+    return data;
+  }

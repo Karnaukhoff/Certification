@@ -13,7 +13,7 @@ function App() {
   const [window, setWindow] = useState(false);
   const [filteredItem, setFilteredItem] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage, setUsersPerPage] = useState(30);
+  const [usersPerPage, setUsersPerPage] = useState(10);
   const [slideButtons, setSlideButtons] = useState(true);
   const paginate = pageNumber => setCurrentPage(pageNumber);
   //пагинация
@@ -151,6 +151,7 @@ function App() {
                   key={user.id}
                   avatar={user.avatar_url}
                   login={user.login}
+                  user={user}
                 />
               );
             })}

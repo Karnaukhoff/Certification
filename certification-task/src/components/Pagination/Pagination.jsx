@@ -91,8 +91,8 @@ const Pagination = ({ usersPerPage, setUsersPerPage, currentPage, countOfPosts, 
         setUsersPerPage(e.target.value)
         paginate(1)
     }} id="select" name="per_page" style={{
-            "margin-left": "10px",
-            "margin-top": "16px",
+            "marginLeft": "10px",
+            "marginTop": "16px",
             "height": "20px"
       }}>
         <option value="10">10</option>
