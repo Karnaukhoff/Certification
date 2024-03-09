@@ -17,7 +17,9 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage, setUsersPerPage] = useState(10);
   const [slideButtons, setSlideButtons] = useState(true);
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+  const [searchButton, setSearchButton] = useState("Найти");
+  const [searchButtonOff, setSearchButtonOff] = useState(false);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -41,44 +43,73 @@ function App() {
   );
   const [search, setSearch] = useState("");
   useEffect(() => {
-    if (search !== ""){
-      setSlideButtons(false)
+    if (search !== "") {
+      setSlideButtons(false);
+      setSearchButton("Загрузка...");
+      setSearchButtonOff(true);
       if (filteredItem === "От наибольшего к наименьшему") {
-        sortUsersDesc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
-          setTotalCount(result?.total_count);
-          setUsers(result.items);
-          setSearched(true);
-        }).then(() => setSlideButtons(true))
-        .catch(() => {
-          setSearched(false)
-          openModal()
-        });
-      }
-      else if (filteredItem === "От наименьшего к наибольшему") {
-        sortUsersAsc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
-          setTotalCount(result?.total_count);
-          setUsers(result?.items);
-          setSearched(true);
-        }).then(() => setSlideButtons(true))
-        .catch(() => {
-          setSearched(false)
-          openModal()
-        });
-      }
-      else {
-        getUsers({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
-          setTotalCount(result?.total_count);
-          setUsers(result?.items);
-          setSearched(true);
-        }).then(() => setSlideButtons(true))
-        .catch(() => {
-          setSearched(false)
-          openModal()
-        });
+        sortUsersDesc({
+          search: search,
+          page: currentPage,
+          per_page: usersPerPage,
+        })
+          .then((result) => {
+            setTotalCount(result?.total_count);
+            setUsers(result.items);
+            setSearched(true);
+          })
+          .then(() => setSlideButtons(true))
+          .catch(() => {
+            setSearched(false);
+            openModal();
+          })
+          .finally(() => {
+            setSlideButtons(true);
+            setSearchButtonOff(false);
+            setSearchButton("Найти");
+          });
+      } else if (filteredItem === "От наименьшего к наибольшему") {
+        sortUsersAsc({
+          search: search,
+          page: currentPage,
+          per_page: usersPerPage,
+        })
+          .then((result) => {
+            setTotalCount(result?.total_count);
+            setUsers(result?.items);
+            setSearched(true);
+          })
+          .then(() => setSlideButtons(true))
+          .catch(() => {
+            setSearched(false);
+            openModal();
+          })
+          .finally(() => {
+            setSlideButtons(true);
+            setSearchButtonOff(false);
+            setSearchButton("Найти");
+          });
+      } else {
+        getUsers({ search: search, page: currentPage, per_page: usersPerPage })
+          .then((result) => {
+            setTotalCount(result?.total_count);
+            setUsers(result?.items);
+            setSearched(true);
+          })
+          .then(() => setSlideButtons(true))
+          .catch(() => {
+            setSearched(false);
+            openModal();
+          })
+          .finally(() => {
+            setSlideButtons(true);
+            setSearchButtonOff(false);
+            setSearchButton("Найти");
+          });
       }
     }
     // eslint-disable-next-line
-  }, [currentPage, usersPerPage])
+  }, [currentPage, usersPerPage]);
 
   return (
     <>
@@ -93,25 +124,39 @@ function App() {
                 onChange={(e) => setSearch(e.target.value)}
               />
               <S.SearchButton
+                disabled={searchButtonOff}
                 onClick={() => {
                   if (search !== "") {
-                    setSlideButtons(false)
-                    getUsers({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
-                      setTotalCount(result?.total_count);
-                      setUsers(result.items);
-                      setSearched(true);
-                    }).then(() => setSlideButtons(true))
-                    .catch(() => {
-                      setSearched(false)
-                      openModal()
-                    });
+                    setSlideButtons(false);
+                    setSearchButton("Загрузка...");
+                    setSearchButtonOff(true);
+                    getUsers({
+                      search: search,
+                      page: currentPage,
+                      per_page: usersPerPage,
+                    })
+                      .then((result) => {
+                        setTotalCount(result?.total_count);
+                        setUsers(result.items);
+                        setSearched(true);
+                      })
+                      .then(() => setSlideButtons(true))
+                      .catch(() => {
+                        setSearched(false);
+                        openModal();
+                      })
+                      .finally(() => {
+                        setSlideButtons(true);
+                        setSearchButtonOff(false);
+                        setSearchButton("Найти");
+                      });
                   } else {
                     setUsers([]);
                     setSearched(false);
                   }
                 }}
               >
-                Найти
+                {searchButton}
               </S.SearchButton>
               <S.TotalCount>
                 {searched ? `Найдено: ${totalCount}` : null}
@@ -137,28 +182,54 @@ function App() {
                       if (search !== "") {
                         setFilteredItem(item);
                         if (item === "От наибольшего к наименьшему") {
-                          setSlideButtons(false)
-                          sortUsersDesc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
-                            setTotalCount(result?.total_count);
-                            setUsers(result.items);
-                            setSearched(true);
-                          }).then(() => setSlideButtons(true))
-                          .catch(() => {
-                            setSearched(false)
-                            openModal()
-                          });
+                          setSlideButtons(false);
+                          setSearchButton("Загрузка...");
+                          setSearchButtonOff(true);
+                          sortUsersDesc({
+                            search: search,
+                            page: currentPage,
+                            per_page: usersPerPage,
+                          })
+                            .then((result) => {
+                              setTotalCount(result?.total_count);
+                              setUsers(result.items);
+                              setSearched(true);
+                            })
+                            .then(() => setSlideButtons(true))
+                            .catch(() => {
+                              setSearched(false);
+                              openModal();
+                            })
+                            .finally(() => {
+                              setSlideButtons(true);
+                              setSearchButtonOff(false);
+                              setSearchButton("Найти");
+                            });
                         }
                         if (item === "От наименьшего к наибольшему") {
-                          setSlideButtons(false)
-                          sortUsersAsc({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
-                            setTotalCount(result?.total_count);
-                            setUsers(result.items);
-                            setSearched(true);
-                          }).then(() => setSlideButtons(true))
-                          .catch(() => {
-                            setSearched(false)
-                            openModal()
-                          });
+                          setSlideButtons(false);
+                          setSearchButton("Загрузка...");
+                          setSearchButtonOff(true);
+                          sortUsersAsc({
+                            search: search,
+                            page: currentPage,
+                            per_page: usersPerPage,
+                          })
+                            .then((result) => {
+                              setTotalCount(result?.total_count);
+                              setUsers(result.items);
+                              setSearched(true);
+                            })
+                            .then(() => setSlideButtons(true))
+                            .catch(() => {
+                              setSearched(false);
+                              openModal();
+                            })
+                            .finally(() => {
+                              setSlideButtons(true);
+                              setSearchButtonOff(false);
+                              setSearchButton("Найти");
+                            });
                         }
                       }
                     }}
@@ -171,17 +242,30 @@ function App() {
               <S.FilterButton
                 onClick={() => {
                   if (search !== "") {
-                    setSlideButtons(false)
-                    getUsers({ search: search, page: currentPage, per_page: usersPerPage }).then((result) => {
-                      setTotalCount(result?.total_count);
-                      setUsers(result.items);
-                      setSearched(true);
-                      setFilteredItem();
-                    }).then(() => setSlideButtons(true))
-                    .catch(() => {
-                      setSearched(false)
-                      openModal()
-                    });
+                    setSlideButtons(false);
+                    setSearchButton("Загрузка...");
+                    setSearchButtonOff(true);
+                    getUsers({
+                      search: search,
+                      page: currentPage,
+                      per_page: usersPerPage,
+                    })
+                      .then((result) => {
+                        setTotalCount(result?.total_count);
+                        setUsers(result.items);
+                        setSearched(true);
+                        setFilteredItem();
+                      })
+                      .then(() => setSlideButtons(true))
+                      .catch(() => {
+                        setSearched(false);
+                        openModal();
+                      })
+                      .finally(() => {
+                        setSlideButtons(true);
+                        setSearchButtonOff(false);
+                        setSearchButton("Найти");
+                      });
                   }
                 }}
               >
@@ -203,8 +287,7 @@ function App() {
                 />
               );
             })}
-            {
-              searched ?
+            {searched ? (
               <Pagination
                 usersPerPage={usersPerPage}
                 setUsersPerPage={setUsersPerPage}
@@ -212,11 +295,8 @@ function App() {
                 countOfPosts={totalCount > 1000 ? 1000 : totalCount}
                 buttons={slideButtons}
                 paginate={paginate}
-            />
-            :
-            null
-            }
-
+              />
+            ) : null}
           </S.UseContainer>
         </S.UseContainer>
       </S.Main>
